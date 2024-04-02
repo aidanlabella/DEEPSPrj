@@ -1,1 +1,46 @@
 % 2nd Milestone
+\documentclass[12pt]{article}
+
+\usepackage[a4paper,margin=0.85in,footskip=0.25in]{geometry}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{palatino}
+\usepackage{setspace}
+\usepackage{pgfplots}
+\usepackage{graphics}
+\usepackage{dirtytalk}
+\usepackage{dramatist}
+
+
+\pgfplotsset{compat=1.16}
+\bibliographystyle{plain} % Change this to your desired style
+% \addbibresource{sources.bib}
+
+
+\begin{document}
+\noindent
+Aidan LaBella \\
+DATA/EEPS 1720 \\
+Project Milestone 2\\
+4/2/2024 \\
+
+\section{Introduction}
+The main question my project attempts to answer is \say{can we impute air quality data when sensor data is unreliable and/or not present}? This project, at a high level, is to train a model that is effective at predicting air pollution given certain parameters. I also propose using a toolkit for neural architecture search while training the model. The applications of a model that can predict air quality vary from being able to estimate the pollutants in the air based on other parameters, to being able to accurately forecast when the pollution will reach its high/low levels, much like a weather forecast. 
+
+Recurrent Neural Networks, or RNNs are an effective way to regress over a dataset. Since RNNs are able to output a set of parameters for a variable number of time-steps, this makes them ideally suited for time series forecasting. Air quality data takes the form of hourly readings from sensors that measure different contents of elements in the air. As such, RNNs can be said to be well-suited for this type of time series forecasting. However, one of the drawbacks that RNNs bring is a computational overhead due to their need to be “unrolled” through time. Because of this, creating smaller recurrent neural networks has been a priority in the DL field but finding the right architecture has been a challenge. Using the Evolutionary eXploration of Augmenting Memory Models (EXAMM)\cite{ororbia_investigating_2019}, we can “evolve'' recurrent neural networks to (hopefully) be the “smallest” yet best performing model for a given task. Not only does this reduce the complexity of the model, it can reduce the computational cost which in turn makes the model more environmentally friendly. We will show that our evolved networks can achieve the same levels of performance as a traditional RNN in PyTorch or Tensorflow.
+
+\section{Related Work}
+Previous applications of the EXAMM\cite{ororbia_investigating_2019} toolkit with neural architecture search (NAS) include making predictions for coal power plants\cite{kaufmann_evolving_2019}.
+\textbf{Note:} This will be expanded for the final submission.
+
+\section{Dataset}
+It is important to first note that this work can be classified as a multivariate time series classification forecasting task. The data that will be used to train the models will be multivariate in form, with one or more columns potentially missing or corrupted to simulate unreliable data.
+To train a well-performing recurrent neural network, we must first find a well-curated dataset that has enough sensor readings to learn from. The UC Irvine Air Quality dataset \cite{misc_air_quality_360} uses 9358 instances of hourly averaged responses from an array of 5 sensors within an Italian city from March 2004 to February 2005, approximately 1 year in time.
+
+\section{Exploratory Analysis}
+For a \say{proof of concept}, the entire dataset was used to \say{evolve} network(s) and evaluate their performance. In NAS, evolution refers to the process of augmenting the model's architecture through random mutations, followed by gradient descent for adequate evaluation. In the experiments conducted, we attempt to impute the $NO_2$ readings based on date, time, temperature and other sensor readings. The preliminary MSE values of well-performing genomes (models) has been found to be in the ballpark of .02-.04, an acceptable range for any deep learning model. Thus, I am confident that an evolved RNN will be well-suited to make predictions for this task.
+
+\section{Methods}
+
+\bibliography{sources} % Replace with your BibTeX filename
+\end{document}
