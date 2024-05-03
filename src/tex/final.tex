@@ -36,49 +36,31 @@ Previous applications of the EXAMM\cite{ororbia_investigating_2019} toolkit with
 \subsection{The EXAMM toolkit}
 The EXAMM toolkit was developed by the Distributed Data Science Systems lab (D2S2) at Rochester Institute of Technology, before the \say{explosion} of modern neural network frameworks like PyTorch and Tensorflow. EXAMM is written entirely in C++ and utilizes cpu-bound MPI and multithreaded compute methods in lieu of GPUs. EXAMM also focuses on feed-forward and recurrent neural networks for its evolutionary processes. This is due to the fact that neuro-evolution for CNNs is a bit trickier to conduct due to the intensive computational resources required for training and evaluation.
 
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.95\textwidth]{resources/EXAMM.png}
+    \end{center}
+    \caption{EXAMM's evolutionary process \cite{lyu2023online}}\label{fig:examm}
+\end{figure}
+
+
 \section{Dataset(s)}
 \paragraph{UCI Air Quality}
 It is important to first note that this work can be classified as a multivariate time series classification forecasting task. The data that will be used to train the models will be multivariate in form, with one or more columns potentially missing or corrupted to simulate unreliable data.
 To train a well-performing recurrent neural network, we must first find a well-curated dataset that has enough sensor readings to learn from. The UC Irvine Air Quality dataset \cite{misc_air_quality_360} uses 9358 instances of hourly averaged responses from an array of 5 sensors within an Italian city from March 2004 to February 2005, approximately 1 year in time.
 \paragraph{MERRA-2}
-The MERRA-2 dataset was chosen as a more complete and representative dataset with regards to US air quality.
+The MERRA-2 dataset was chosen as a more complete and representative dataset with regard to US air quality. 
 
 \section{Exploratory Analysis}
 For a \say{proof of concept}, the entire dataset was used to \say{evolve} network(s) and evaluate their performance. In NAS, evolution refers to the process of augmenting the model's architecture through random mutations, followed by gradient descent for adequate evaluation. In the experiments conducted, we attempt to impute the ground truth readings based on date, time, temperature and other sensor readings. We evolve the networks for 2000 genomes (series of mutations) with 5 epochs of gradient descent for evaluation. The preliminary MSE values of well-performing genomes (models) for univariate ouputs has been found to be in the ballpark of $[.02,.04]$, an acceptable range for any deep learning model. For multivariate outputs, the loss was higher ($\geq 0.2$). Thus, I am confident that an evolved RNN will be well-suited to make predictions for this task. 
 
-\begin{figure}
-    \includegraphics[width=\linewidth]{resources/init_genome.png}
-    \caption{The architecture of the inital evolved RNN for univariate predictions. Arrows represent edges (per-timestep).}
-\end{figure}
+\section{Methodology}
+The methodology of this work will focus around the following research questions:
+\paragraph{RQ1:} What input columns can accurately estimate the levels of pollutants such as Carbon Monoxide, $CO$? \\
+\paragraph{RQ2:} Can multiple prediction columns exist in the output layer with minimal performance impact? I.e. can we predict multiple columns at once? \\
+\paragraph{RQ3:} How do our \textbf{forecasted} values compare with actual sensor readings?\\
+\paragraph{RQ4:} What is the inference time of the best performing model? How does it compare to a standard Jordan, Elman and standard RNNs? \\
 
-\begin{figure}
-    \includegraphics[width=\linewidth]{resources/init_genome_mv0.png}
-    \caption{The architecture of the inital evolved RNN for multivariate predictions. Arrows represent edges (per-timestep).}
-\end{figure}
-
-\section{Methods}
-For the coming weeks, I will answer the following research questions (ranked by priority):\\
-\textbf{RQ1:} What input columns can accurately estimate the levels of pollutants such as Carbon Monoxide, $CO$ $NO_x$? \\
-\textbf{RQ2:} Can multiple prediction columns exist in the output layer with minimal performance impact? I.e. can we predict multiple columns at once? \\
-\begin{footnotesize}
-    Note: \textbf{RQ1} and \textbf{RQ2} may require additional data sources. For now, the UCI dataset is sufficient.\\
-\end{footnotesize}
-\textbf{RQ3:} How do our \textbf{forecasted} values compare with actual sensor readings?\\
-\textbf{RQ4:} What is the inference time of the best performing model? How does it compare to a standard Jordan, Elman and standard RNNs? \\
-The experiments that will be conducted will be as follows:
-\begin{enumerate}
-    \item
-        Evolve RNNs to predcit GT values. Vary the input columns. Determine which set of input parameters is \say{the best} based on MSE/MAE. Perform post-training if necessary (Answers \textbf{RQ1})
-    \item
-        Create distributions of the predicted values and plot predictions for final paper. (Answers \textbf{RQ3}, \textbf{RQ1})
-    \item
-        Feed the same dataset into a vanilla EXAMM RNN. Compare inference time and performance to that of an evolved EXAMM RNN. (Answers \textbf{RQ4})
-    \item
-        Repeat the above experiements for multivariate and univariate output layers. (Answers \textbf{RQ2})
-\end{enumerate}
-
-\section{Milestone 3 Experiment:}
-For this milestone, we will take an evolved RNN and train it for $N$ epochs (in progress). 
 
 \section{Evaluation}
 To evaluate both \textbf{RQ1} and \textbf{RQ2}, both mean average error (MAE) and mean squared error (MSE) will be used. Plots nd distributions will also be created to showcase the models performance for \textit{each} timestep in the series.\\
@@ -86,7 +68,7 @@ We then make two plots, one with real versus predicted and the absoulte error be
 This aims to answer \textbf{RQ1} \& \textbf{RQ3}.
 
 \section{Acknowledgments}
-I want to thank my B.S. advisor, Dr. Travis Desell and Josh Karns from the D2S2 lab at RIT for their help and support with the EXAMM code base!
+I want to thank my B.S. advisor, Dr. Travis Desell and my former lab-mates, Josh Karns and Zimeng Lyu at RIT for their help and support with the EXAMM code base!
 
 \bibliography{sources} % Replace with your BibTeX filename
 \end{document}
