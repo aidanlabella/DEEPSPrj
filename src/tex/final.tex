@@ -34,7 +34,7 @@ Recurrent Neural Networks, or RNNs are an effective way to regress over a datase
 \section{Related Work}
 Previous applications of the EXAMM\cite{ororbia_investigating_2019} toolkit with neural architecture search (NAS) include making predictions for coal power plants\cite{kaufmann_evolving_2019}. We seek to use this work as a foundation and proof-of-concept for our task of forecasting air quality data.
 \subsection{The EXAMM toolkit}
-The EXAMM toolkit was developed by the Distributed Data Science Systems lab (D2S2) at Rochester Institute of Technology, before the \say{explosion} of modern neural network frameworks like PyTorch and Tensorflow. EXAMM is written entirely in C++ and utilizes cpu-bound MPI and multithreaded compute methods in lieu of GPUs. EXAMM also focuses on feed-forward and recurrent neural networks for its evolutionary processes. This is due to the fact that neuro-evolution for CNNs is a bit trickier to conduct due to the intensive computational resources required for training and evaluation.
+The EXAMM toolkit was developed by the Distributed Data Science Systems lab (D2S2) at Rochester Institute of Technology, before the \say{explosion} of modern neural network frameworks like PyTorch and Tensorflow. EXAMM is written entirely in C++ and utilizes cpu-bound MPI and multithreaded compute methods in lieu of GPUs. EXAMM also focuses on feed-forward and recurrent neural networks for its evolutionary processes. This is due to the fact that neuro-evolution for CNNs is a bit trickier to conduct due to the intensive computational resources required for training and evaluation. One added benefit of a NAS apparoach is its ability to identify the necessary input columns for a successful prediction. In turn, this will allow us to answer \textbf{RQ1}.
 
 \begin{figure}
     \begin{center}
@@ -45,11 +45,56 @@ The EXAMM toolkit was developed by the Distributed Data Science Systems lab (D2S
 
 
 \section{Dataset(s)}
-\paragraph{UCI Air Quality}
+For this project, multiple datasets were explored including the UCI Air Quality repository and the NASA MERRA-2 dataset.
+\subsection{UCI Air Quality}
 It is important to first note that this work can be classified as a multivariate time series classification forecasting task. The data that will be used to train the models will be multivariate in form, with one or more columns potentially missing or corrupted to simulate unreliable data.
 To train a well-performing recurrent neural network, we must first find a well-curated dataset that has enough sensor readings to learn from. The UC Irvine Air Quality dataset \cite{misc_air_quality_360} uses 9358 instances of hourly averaged responses from an array of 5 sensors within an Italian city from March 2004 to February 2005, approximately 1 year in time.
-\paragraph{MERRA-2}
-The MERRA-2 dataset was chosen as a more complete and representative dataset with regard to US air quality. 
+\subsection{MERRA-2} 
+The MERRA-2 \cite{gelaro2017modern} dataset was chosen as a more complete and representative dataset with regard to US air quality. For the purposes of this project, we will look at the following columns:
+    \begin{table}[h]
+    \centering
+    \begin{tabular}{|c|p{10cm}|}
+        \hline
+        \textbf{Parameter} & \textbf{Description} \\
+        \hline
+        \hline
+        AIRDENS & Air density, in kilograms per cubic meter (kg/m\textsuperscript{3}) \\
+        \hline
+        SO4 & Sulfate concentration in micrograms per cubic meter ($\mu$g/m\textsuperscript{3}) \\
+        \hline
+        SO2 & Sulfur dioxide measured in parts per billion (ppb) \\
+        \hline
+        RH & Relative humidity as a percentage \\
+        \hline
+        PS & Atmospheric pressure, in hectopascals (hPa) or millibars (mbar) \\
+        \hline
+        H & Hydrogen concentration, in parts per million (ppm) \\
+        \hline
+        O3 & Ozone concentration, in parts per billion (ppb) \\
+        \hline
+        T & Temperature of the air, in Kelvin (K) \\
+        \hline
+        U & Horizontal wind speed, meters per second (m/s) \\
+        \hline
+        V & Vertical wind speed, in meters per second (m/s) \\
+        \hline
+        CO & Carbon monoxide concentration in parts per million (ppm) \\
+        \hline
+    \end{tabular}
+    \caption{Glossary of MERRA-2 Parameters}
+    \label{tab:merra-params}
+\end{table}
+\paragraph{Parameter Forecasting} To have a meaningful measure of the air quality at a given point in time, we will narrow our focus to the following particulate air measures. Our main focus will be on CO levels but for mutivatiate output layers we will look at additional parameter levels.
+\begin{enumerate}
+    \item
+        CO or Carbon Monoxide
+    \item
+        O3 or Ozone Concentration
+    \item
+        SO$_{4}$ or Sulfate Concentration
+    \item
+        SO$_{2}$ or Sulfur Dioxide Concentration
+\end{enumerate}
 
 \section{Exploratory Analysis}
 For a \say{proof of concept}, the entire dataset was used to \say{evolve} network(s) and evaluate their performance. In NAS, evolution refers to the process of augmenting the model's architecture through random mutations, followed by gradient descent for adequate evaluation. In the experiments conducted, we attempt to impute the ground truth readings based on date, time, temperature and other sensor readings. We evolve the networks for 2000 genomes (series of mutations) with 5 epochs of gradient descent for evaluation. The preliminary MSE values of well-performing genomes (models) for univariate ouputs has been found to be in the ballpark of $[.02,.04]$, an acceptable range for any deep learning model. For multivariate outputs, the loss was higher ($\geq 0.2$). Thus, I am confident that an evolved RNN will be well-suited to make predictions for this task. 
@@ -60,6 +105,10 @@ The methodology of this work will focus around the following research questions:
 \paragraph{RQ2:} Can multiple prediction columns exist in the output layer with minimal performance impact? I.e. can we predict multiple columns at once? \\
 \paragraph{RQ3:} How do our \textbf{forecasted} values compare with actual sensor readings?\\
 \paragraph{RQ4:} What is the inference time of the best performing model? How does it compare to a standard Jordan, Elman and standard RNNs? \\
+Since one of the goals of this project is to be able to forecast air quality parameters
+\subsection{Multivatiate Output Layer}
+% For predicting multiple air quality data points, such as CO, SO_{4}, SO_{2} and O_{3}, we will use the following input parameters:\\
+\subsection{Univariate Output Layer}
 
 
 \section{Evaluation}
